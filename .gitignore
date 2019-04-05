@@ -1,0 +1,6 @@
+*pyc
+__pycache__/
+*.yaml
+*.yml
+examples/test*.py
+docs
