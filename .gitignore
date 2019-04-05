@@ -4,3 +4,4 @@ __pycache__/
 *.yml
 examples/test*.py
 docs
+data
