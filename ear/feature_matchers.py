@@ -33,7 +33,3 @@ def bf_matcher(desc1, desc2, num_matches):
     matches = _sort_matches(matches)[:num_matches]
 
     return matches
-
-
-def flann_matcher(desc1, desc2, num_matches):
-    pass

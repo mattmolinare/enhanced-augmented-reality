@@ -9,7 +9,7 @@ import ear
 if __name__ == '__main__':
 
     fname1 = r'C:\Users\mattm\Documents\gatech\spring2019\cs6476\ear\videos\office\frames8\frame0001.png'
-    fname2 = r'C:\Users\mattm\Documents\gatech\spring2019\cs6476\ear\videos\office\frames8\frame0200.png'
+    fname2 = r'C:\Users\mattm\Documents\gatech\spring2019\cs6476\ear\videos\office\frames8\frame0011.png'
 
     num_matches = 20
     ransac_thresh = 5.0
