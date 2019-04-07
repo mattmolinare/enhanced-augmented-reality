@@ -3,11 +3,11 @@
 
 import glob
 import sys
-import ofp
+import ear
 
 
 def main(fname):
-    params = ofp.read_yaml(fname)
+    params = ear.read_yaml(fname)
 
 
 if __name__ == '__main__':
