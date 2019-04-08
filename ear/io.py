@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import cv2
+import os
 import yaml
 
 __all__ = [
@@ -37,14 +38,24 @@ class VideoReader:
 
 class VideoWriter:
 
+    codecs = {
+     'mp4': 'MP4V'
+    }
+
     def __init__(self, fname, fps, size):
+
+        ext = fname.rsplit('.', 1)[1].lower()
+        if ext not in VideoWriter.codecs:
+            raise ValueError('invalid file name extension: %s' % ext)
+
         self.fname = fname
+        self.fourcc = cv2.VideoWriter_fourcc(*VideoWriter.codecs[ext])
         self.fps = fps
         self.size = tuple(size)
 
     def __enter__(self):
-        fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-        self._writer = cv2.VideoWriter(self.fname, fourcc, self.fps, self.size)
+        self._writer = cv2.VideoWriter(self.fname, self.fourcc, self.fps,
+                                       self.size)
         return self._writer
 
     def __exit__(self, type, value, traceback):

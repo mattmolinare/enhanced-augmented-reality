@@ -6,7 +6,8 @@ from matplotlib import pyplot
 
 __all__ = [
     'draw_rectangle',
-    'easy_imshow'
+    'easy_imshow',
+    'rescale_image'
 ]
 
 
@@ -43,3 +44,7 @@ def draw_rectangle(img, bbox, color=(0, 0, 255), thickness=1):
     draw_line(1, 3)
     draw_line(3, 2)
     draw_line(2, 0)
+
+
+def rescale_image(image, scale):
+    return cv2.resize(image, None, fx=scale, fy=scale)
