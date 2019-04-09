@@ -12,7 +12,8 @@ __all__ = [
 
 
 def easy_imshow(img, num=None, **imshow_kwargs):
-
+    """Helper for ``matplotlib.pyplot.imshow`` for grayscale and BGR images
+    """
     defaults = {
         'cmap': 'gray',
         'interpolation': 'none'
@@ -34,7 +35,9 @@ def easy_imshow(img, num=None, **imshow_kwargs):
 
 
 def draw_rectangle(img, bbox, color=(0, 0, 255), thickness=1):
-
+    """Bounding box is defineid as [top-left, top-right, bottom-left,
+    bottom-right].
+    """
     bbox = [tuple(pt) for pt in bbox.round().astype(np.int32)]
 
     def draw_line(i1, i2):
@@ -47,4 +50,6 @@ def draw_rectangle(img, bbox, color=(0, 0, 255), thickness=1):
 
 
 def rescale_image(image, scale):
+    """Rescale image, preserving aspect ratio
+    """
     return cv2.resize(image, None, fx=scale, fy=scale)
