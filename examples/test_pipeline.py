@@ -8,29 +8,31 @@ import ear
 
 if __name__ == '__main__':
 
-    in_fname = r'..\videos\office\office.mp4'
-    out_fname = r'..\videos\office\test.mp4'
-    bbox = np.array([
-        [1702.0, 530.0],
-        [2570.0, 530.0],
-        [1687.0, 1452.0],
-        [2546.0, 1506.0]
-    ]) * scale
-
-#    in_fname = r'..\videos\ps3-4-a\ps3-4-a.mp4'
-#    out_fname = r'..\videos\ps3-4-a\test.mp4'
+#    in_fname = r'..\videos\office\office.mp4'
+#    out_fname = r'..\videos\office\test.mp4'
 #    bbox = np.array([
-#        [360.0, 298.0],
-#        [424.0, 303.0],
-#        [360.0, 342.0],
-#        [423.0, 342.0]
+#        [1702.0, 530.0],
+#        [2570.0, 530.0],
+#        [1687.0, 1452.0],
+#        [2546.0, 1506.0]
 #    ]) * scale
 
+    in_fname = r'..\videos\ps3-4-b\ps3-4-b.mp4'
+    out_fname = r'..\videos\ps3-4-b\test.mp4'
+    scale = 1.0 / 1
+
+    bbox = np.array([
+        [200.0, 100.0],
+        [400.0, 100.0],
+        [200.0, 250.0],
+        [400.0, 250.0]
+    ]) * scale
+
+    num_features = 10000
     num_matches = 1000
-    ransac_thresh = 5.0
-    d_iter = 20
-    max_iter = 1200
-    scale = 1.0 / 2
+    ransac_thresh = 2.0
+    d_iter = 10
+    max_iter = 10000
 
     fps = ear.get_fps(in_fname) / float(d_iter)
     gen = ear.generate_frames(in_fname)
@@ -64,7 +66,7 @@ if __name__ == '__main__':
 
             # detect features
             kp1, kp2, desc1, desc2 = ear.feature_detectors \
-                .orb_detector(gray1, gray2)
+                .orb_detector(gray1, gray2, num_features=num_features)
 
             # match features
             matches = ear.feature_matchers.bf_matcher(desc1, desc2)

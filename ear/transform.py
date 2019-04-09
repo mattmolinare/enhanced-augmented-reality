@@ -15,11 +15,4 @@ def compute_homography(pts1, pts2, ransac_thresh):
 
 
 def apply_homography(pts, H):
-
-    x = np.ones(pts.shape[:-1] + (3,))
-    x[..., :2] = pts
-
-    x_tr = np.einsum('...ij,...j', H, x)
-    pts_tr = x_tr[..., :2] / x_tr[..., 2, np.newaxis]
-
-    return pts_tr
+    return cv2.perspectiveTransform(pts[np.newaxis], H)[0]

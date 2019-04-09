@@ -1,1 +1,5 @@
-test: True
+source_video: 'videos\ps3-4-a\ps3-4-a.mp4
+num_features: 10000
+num_matches: 1000
+ransac_thresh: 3.0
+scale: 1.0

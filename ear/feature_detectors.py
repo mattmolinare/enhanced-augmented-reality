@@ -8,9 +8,9 @@ __all__ = [
 ]
 
 
-def orb_detector(img1, img2):
+def orb_detector(img1, img2, num_features=500):
 
-    orb = cv2.ORB_create()
+    orb = cv2.ORB_create(nfeatures=num_features)
 
     kp1, desc1 = orb.detectAndCompute(img1, None)
     kp2, desc2 = orb.detectAndCompute(img2, None)
