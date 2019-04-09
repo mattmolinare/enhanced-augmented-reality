@@ -8,7 +8,7 @@ __all__ = [
     'VideoReader',
     'VideoWriter',
     'generate_frames',
-    'get_fps',
+    'get_video_properties',
     'read_yaml'
 ]
 
@@ -62,10 +62,20 @@ class VideoWriter:
         self._writer.release()
 
 
-def get_fps(fname):
+def get_video_properties(fname):
+
+    codes = {
+        'fps': cv2.CAP_PROP_FPS,
+        'rows': cv2.CAP_PROP_FRAME_HEIGHT,
+        'cols': cv2.CAP_PROP_FRAME_WIDTH,
+        'num_frames': cv2.CAP_PROP_FRAME_COUNT,
+        'fourcc': cv2.CAP_PROP_FOURCC
+    }
+
     with VideoReader(fname) as reader:
-        fps = reader.get(cv2.CAP_PROP_FPS)
-    return fps
+        props = {key: reader.get(val) for key, val in codes.items()}
+
+    return props
 
 
 def generate_frames(fname):

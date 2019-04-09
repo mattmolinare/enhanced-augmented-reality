@@ -9,11 +9,11 @@ import ear
 if __name__ == '__main__':
 
     fname1 = r'C:\Users\mmolinare\Documents\gatech\spring2019\cs6476\ear\videos\ps3-4-a\frames\frame0001.png'
-    fname2 = r'C:\Users\mmolinare\Documents\gatech\spring2019\cs6476\ear\videos\ps3-4-a\frames\frame1000.png'
+    fname2 = r'C:\Users\mmolinare\Documents\gatech\spring2019\cs6476\ear\videos\ps3-4-a\frames\frame0002.png'
 
     num_features = 10000
     num_matches = 3000
-    ransac_thresh = 2.0
+    ransac_thresh = 3.0
 
     img1 = cv2.imread(fname1, 0)
     img2 = cv2.imread(fname2, 0)

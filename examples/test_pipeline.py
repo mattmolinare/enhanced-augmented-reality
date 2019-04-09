@@ -8,33 +8,25 @@ import ear
 
 if __name__ == '__main__':
 
-#    in_fname = r'..\videos\office\office.mp4'
-#    out_fname = r'..\videos\office\test.mp4'
-#    bbox = np.array([
-#        [1702.0, 530.0],
-#        [2570.0, 530.0],
-#        [1687.0, 1452.0],
-#        [2546.0, 1506.0]
-#    ]) * scale
-
-    in_fname = r'..\videos\ps3-4-b\ps3-4-b.mp4'
-    out_fname = r'..\videos\ps3-4-b\test.mp4'
+    in_fname = r'..\videos\ps3-4-a\ps3-4-a.mp4'
+    out_fname = r'..\videos\ps3-4-a\test.mp4'
     scale = 1.0 / 1
 
     bbox = np.array([
-        [200.0, 100.0],
-        [400.0, 100.0],
-        [200.0, 250.0],
-        [400.0, 250.0]
+        [134.0, 108.0],
+        [447.0, 109.0],
+        [133.0, 250.0],
+        [446.0, 256.0]
     ]) * scale
 
     num_features = 10000
-    num_matches = 1000
-    ransac_thresh = 2.0
-    d_iter = 10
+    num_matches = 3000
+    ransac_thresh = 5.0
+    d_iter = 5
     max_iter = 10000
 
-    fps = ear.get_fps(in_fname) / float(d_iter)
+    props = ear.get_video_properties(in_fname)
+    fps = props['fps'] / float(d_iter)
     gen = ear.generate_frames(in_fname)
     bgr1 = next(gen)
     bgr1 = ear.rescale_image(bgr1, scale)
@@ -49,7 +41,7 @@ if __name__ == '__main__':
     with ear.VideoWriter(out_fname, fps, (cols, rows)) as writer:
 
         out = bgr1.copy()
-        ear.draw_rectangle(out, bbox, thickness=2)
+        ear.draw_bbox(out, bbox, thickness=2)
         writer.write(out)
 
         for bgr2 in gen:
@@ -86,7 +78,7 @@ if __name__ == '__main__':
 
             # write frame
             out = bgr2.copy()
-            ear.draw_rectangle(out, bbox, thickness=2)
+            ear.draw_bbox(out, bbox, thickness=2)
             writer.write(out)
 
             # update frame1

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from . import feature_detectors
-from . import feature_matchers
+from .feature_detectors import *
+from .feature_matchers import *
 from .io import *
-from . import transform
+from .transform import *
 from .utils import *

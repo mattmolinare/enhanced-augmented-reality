@@ -5,3 +5,4 @@ __pycache__/
 examples/test*.py
 docs
 videos
+images
