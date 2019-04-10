@@ -15,17 +15,17 @@ def main(fname):
     params = ear.read_yaml(fname)
 
     img = cv2.imread(params['image_in'])
-    props = ear.get_video_properties(params['video_in'])
+    fps = ear.get_fps(params['video_in'])
     gen = ear.generate_frames(params['video_in'])
-    video_writer = ear.VideoWriter(params['video_out'], props['fps'],
-                                   (props['cols'], props['rows']))
 
     frame_in1 = next(gen)
+    rows, cols = frame_in1.shape[:2]
+
     bbox = ear.get_initial_bbox(frame_in1)
-    H = ear.get_initial_homography(img, frame_in1)
+    H = ear.get_initial_homography(img, bbox)
     i = 1
 
-    with video_writer as writer:
+    with ear.VideoWriter(params['video_out'], fps, (cols, rows)) as writer:
 
         # project image into first frame
         frame_out = ear.project_image(img, frame_in1, H)

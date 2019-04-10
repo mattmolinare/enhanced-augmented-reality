@@ -1,6 +1,6 @@
+image_in: 'images\opencv.png'
 video_in: 'videos\ps3-4-a\ps3-4-a.mp4'
 video_out: 'test.mp4'
-image_in: 'images\opencv.png'
 num_features: 10000
 num_matches: 3000
 ransac_thresh: 5.0

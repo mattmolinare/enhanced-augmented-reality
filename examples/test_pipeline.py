@@ -22,7 +22,7 @@ if __name__ == '__main__':
     num_features = 10000
     num_matches = 3000
     ransac_thresh = 5.0
-    d_iter = 5
+    d_iter = 20
     max_iter = 10000
 
     props = ear.get_video_properties(in_fname)

@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import cv2
-import os
 import yaml
 
 __all__ = [
     'VideoReader',
     'VideoWriter',
     'generate_frames',
-    'get_video_properties',
+    'get_fps',
     'read_yaml'
 ]
 
@@ -62,20 +61,10 @@ class VideoWriter:
         self._writer.release()
 
 
-def get_video_properties(fname):
-
-    codes = {
-        'fps': cv2.CAP_PROP_FPS,
-        'rows': cv2.CAP_PROP_FRAME_HEIGHT,
-        'cols': cv2.CAP_PROP_FRAME_WIDTH,
-        'num_frames': cv2.CAP_PROP_FRAME_COUNT,
-        'fourcc': cv2.CAP_PROP_FOURCC
-    }
-
+def get_fps(fname):
     with VideoReader(fname) as reader:
-        props = {key: reader.get(val) for key, val in codes.items()}
-
-    return props
+        fps = reader.get(cv2.CAP_PROP_FPS)
+    return fps
 
 
 def generate_frames(fname):

@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     num_features = 10000
     num_matches = 3000
-    ransac_thresh = 3.0
+    ransac_thresh = 5.0
 
     img1 = cv2.imread(fname1, 0)
     img2 = cv2.imread(fname2, 0)

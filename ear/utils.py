@@ -42,13 +42,10 @@ def draw_bbox(img, bbox, color=(0, 0, 255), thickness=1):
     """
     bbox = [tuple(pt) for pt in bbox.round().astype(np.int32)]
 
-    def draw_line(i, j):
-        cv2.line(img, bbox[i], bbox[j], color, thickness)
-
-    draw_line(0, 1)
-    draw_line(1, 3)
-    draw_line(3, 2)
-    draw_line(2, 0)
+    cv2.line(img, bbox[0], bbox[1], color, thickness)
+    cv2.line(img, bbox[1], bbox[3], color, thickness)
+    cv2.line(img, bbox[3], bbox[2], color, thickness)
+    cv2.line(img, bbox[2], bbox[0], color, thickness)
 
 
 def rescale_image(img, scale):
@@ -61,7 +58,6 @@ def get_corners(img):
     """Get coordinates of image corners
     """
     rows, cols = img.shape[:2]
-
     corners = np.array([[0, 0], [cols, 0], [0, rows], [cols, rows]],
                        dtype=np.float64)
 
@@ -70,13 +66,13 @@ def get_corners(img):
 
 def get_initial_bbox(frame):
     # TODO: MBS algorithm
-    return get_corners(frame)
+#    return get_corners(frame)
 
-#    bbox = np.array([
-#        [134.0, 108.0],
-#        [447.0, 109.0],
-#        [133.0, 250.0],
-#        [446.0, 256.0]
-#    ])
-#
-#    return bbox
+    bbox = np.array([
+        [134.0, 108.0],
+        [447.0, 109.0],
+        [133.0, 250.0],
+        [446.0, 256.0]
+    ])
+
+    return bbox
