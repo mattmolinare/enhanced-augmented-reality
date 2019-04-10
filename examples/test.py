@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
             # update cumulative homography
             Hab = ear.get_homography(a, b, num_features, num_matches,
-                                      ransac_thresh)
+                                     ransac_thresh)
             Hb = ear.update_homography(Ha, Hab)
 
             # write frame
@@ -48,5 +48,5 @@ if __name__ == '__main__':
             writer.write(frame)
 
             # update a
-            a = b
-            Ha = Hb
+            a[:] = b
+            Ha[:] = Hb

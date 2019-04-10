@@ -16,8 +16,9 @@ if __name__ == '__main__':
     output_video = r'..\videos\ps3-4-a\test2.mp4'
     num_features = 10000
     num_matches = 3000
-    ransac_thresh = 3.0
-    frame_step = 20
+    num_frames = 300
+    ransac_thresh = 10.0
+    frame_step = 5
 
     # file io
     img = cv2.imread(input_image)
@@ -56,16 +57,17 @@ if __name__ == '__main__':
             Hb = ear.update_homography(Ha, Hab)
 
             # estimate partial homographies
-            homographies = ear.interpolate_homographies(Ha, Hb, frame_step)
+            homographies = ear.interpolate_homographies(Ha, Hb, frame_step,
+                                                        method='direct')
 
-            for b, Hb in zip(frames, homographies[1:]):
+            for b, Hb in zip(frames, homographies):
                 # write frames
                 frame = ear.project_image(img, b, Hb)
                 writer.write(frame)
 
             # update a
-            a = b
-            Ha = Hb
+            a[:] = b
+            Ha[:] = Hb
 
-            if frame_count > 200:
+            if frame_count > num_frames:
                 break

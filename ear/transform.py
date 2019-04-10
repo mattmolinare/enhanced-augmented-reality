@@ -49,15 +49,17 @@ def project_image(img, frame, H):
 
 
 def interpolate_homographies(H1, H2, num_steps, method='direct'):
-    """Result has shape (`num_steps` + 1, 3, 3)
+    """Result has shape (`num_steps`, 3, 3)
     """
-    homographies = np.empty((num_steps + 1, 3, 3))
-    homographies[0] = H1
+    if num_steps == 1:
+        return H2
+
+    homographies = np.empty((num_steps, 3, 3))
     homographies[-1] = H2
 
     if method == 'direct':
         delta = (H2 - H1) / num_steps
-        homographies[1:-1] = H1 + \
+        homographies[:-1] = H1 + \
             delta * np.arange(1, num_steps)[:, np.newaxis, np.newaxis]
 
     elif method == 'polar_decomp':
@@ -95,10 +97,11 @@ def get_homography(img1, img2, num_features, num_matches, ransac_thresh):
     return H
 
 
-def update_homography(H1, H2):
-    """`H1` and `H2` have shape (..., 3, 3)
+def update_homography(H, H12):
+    """`H` is cumulative homography at image 1 and `H12` is homography between
+    image 1 and image 2
     """
-    H = H2.dot(H1)
+    H = H12.dot(H)
     H *= 1.0 / H[2, 2]
 
     return H
