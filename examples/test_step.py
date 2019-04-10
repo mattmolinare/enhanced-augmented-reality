@@ -17,6 +17,7 @@ if __name__ == '__main__':
     num_features = 10000
     num_matches = 3000
     ransac_thresh = 3.0
+    frame_step = 20
 
     # file io
     img = cv2.imread(input_image)
@@ -26,21 +27,44 @@ if __name__ == '__main__':
     # initialize
     a = next(gen)
     rows, cols, _ = a.shape
-    Ha = ear.get_initial_homography(img, a)
+    Ha = ear.get_initial_homograpy(img, a)
+
+    # populate arrays
+    frames = np.empty((frame_step, rows, cols, 3), dtype=np.uint8)
+    homographies = np.empty((frame_step, 3, 3))
+
+    frames[0] = a
+    homographies[0] = Ha
+
+    for i in range(1, frame_step):
+
+        b = next(gen)
+        Hab = ear.get_homography(a, b, num_features, num_matches,
+                                 ransac_thresh)
+        Hb = ear.update_homography(Ha, Hab)
+
+        frames[i] = b
+        homographies[i] = Hb
 
     with ear.VideoWriter(output_video, fps, (cols, rows)) as writer:
 
-        # write initial frame
-        frame = ear.project_image(img, a, Ha)
-        writer.write(frame)
+        for b, Hb in zip(frames, homographies):
+            # write initial frames
+            frame = ear.project_image(img, b, Hb)
+            writer.write(frame)
 
-        for frame_count, b in enumerate(gen, 1):
+        for frame_count, b in enumerate(gen, frame_step):
 
             print(frame_count)
 
+            i = frame_count % frame_step
+
+            a = frames[i]
+            Ha = homographies[i]
+
             # update cumulative homography
             Hab = ear.get_homography(a, b, num_features, num_matches,
-                                      ransac_thresh)
+                                     ransac_thresh)
             Hb = ear.update_homography(Ha, Hab)
 
             # write frame
@@ -48,5 +72,5 @@ if __name__ == '__main__':
             writer.write(frame)
 
             # update a
-            a = b
-            Ha = Hb
+            a[:] = b
+            Ha[:] = Hb
