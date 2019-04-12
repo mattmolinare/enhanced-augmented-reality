@@ -16,8 +16,8 @@ if __name__ == '__main__':
     output_video = r'..\videos\ps3-4-a\test2.mp4'
     num_features = 10000
     num_matches = 3000
-    num_frames = 300
-    ransac_thresh = 10.0
+    num_frames = 9999
+    ransac_thresh = 20.0
     frame_step = 5
 
     # file io

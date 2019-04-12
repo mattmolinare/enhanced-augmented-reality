@@ -1,8 +1,13 @@
 image_in: 'images\opencv.png'
 video_in: 'videos\ps3-4-a\ps3-4-a.mp4'
 video_out: 'test.mp4'
+
 num_features: 10000
 num_matches: 3000
 ransac_thresh: 5.0
+
+k_size_median: 11
+k_size_sobel: 7
+percentile: 99.0
+
 verbose: True
-draw_bbox: False

@@ -73,7 +73,9 @@ def interpolate_homographies(H1, H2, num_steps, method='direct'):
 
 def get_initial_homography(img, frame):
 
-    pts1 = utils.get_corners(img)
+    rows, cols, _ = img.shape
+
+    pts1 = utils.get_corners(rows, cols)
     pts2 = utils.get_initial_bbox(frame)
 
     H, _ = compute_homography(pts1, pts2)
