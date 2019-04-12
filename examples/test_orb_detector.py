@@ -3,16 +3,18 @@
 
 import cv2
 import numpy as np
+
+# local imports
 import context
 import ear
 
 if __name__ == '__main__':
 
-    fname1 = r'..\videos\ps3-4-a\frames\frame0001.png'
-    fname2 = r'..\videos\ps3-4-a\frames\frame0002.png'
+    fname1 = r'..\videos\ps3-4-a\frames\frame0101.png'
+    fname2 = r'..\videos\ps3-4-a\frames\frame1002.png'
 
-    num_features = 10000
-    num_matches = 3000
+    num_features = 5000
+    num_matches = 2000
     ransac_thresh = 10.0
 
     img1 = cv2.imread(fname1, 0)

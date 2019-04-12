@@ -2,7 +2,6 @@
 
 import cv2
 import numpy as np
-from matplotlib import pyplot
 
 __all__ = [
     'compute_edge_gradient',
@@ -17,6 +16,8 @@ __all__ = [
 def easy_imshow(img, num=None, **imshow_kwargs):
     """Helper for ``matplotlib.pyplot.imshow`` for grayscale and BGR images
     """
+    from matplotlib import pyplot
+
     defaults = {
         'cmap': 'gray',
         'interpolation': 'none'
@@ -42,10 +43,13 @@ def draw_bbox(img, bbox, color=(0, 0, 255), thickness=1):
     """
     bbox = [tuple(pt) for pt in bbox.round().astype(np.int32)]
 
-    cv2.line(img, bbox[0], bbox[1], color, thickness)
-    cv2.line(img, bbox[1], bbox[3], color, thickness)
-    cv2.line(img, bbox[3], bbox[2], color, thickness)
-    cv2.line(img, bbox[2], bbox[0], color, thickness)
+    def draw_line(i, j):
+        cv2.line(img, bbox[i], bbox[j], color, thickness)
+
+    draw_line(0, 1)
+    draw_line(1, 3)
+    draw_line(3, 2)
+    draw_line(2, 0)
 
 
 def rescale_image(img, scale):
@@ -63,27 +67,53 @@ def get_corners(rows, cols):
     return corners
 
 
-def compute_edge_gradient(img, ksize=5):
+def compute_edge_gradient(img, sobel_size=3):
 
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    if img.ndim == 3:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    grad_x = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=ksize)
-    grad_y = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=ksize)
+    Gx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=sobel_size)
+    Gy = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=sobel_size)
 
-    grad = np.abs(grad_x) + np.abs(grad_y)
+    G = np.abs(Gx) + np.abs(Gy)
 
-    return grad
+    return G
 
 
-def get_initial_bbox(img, frame):
-    pass
+def get_initial_bbox(img, frame, median_size, sobel_size, edge_thresh):
+    """Get initial bounding box using distances to edge regions of `frame`.
+    Bounding box is defined as [top-left, top-right, bottom-left,
+    bottom-right].
+    """
+    # apply median filter
+    frame_blur = cv2.medianBlur(frame, median_size)
 
-    # return get_corners(frame)
-    # bbox = np.array([
-    #     [134.0, 108.0],
-    #     [447.0, 109.0],
-    #     [133.0, 250.0],
-    #     [446.0, 256.0]
-    # ])
+    # compute gradient
+    grad = compute_edge_gradient(frame_blur, sobel_size=sobel_size)
 
-    # return bbox
+    # apply threshold on gradient to get non-edges
+    non_edges = np.where(grad > edge_thresh, 0, 255).astype(np.uint8)
+
+    # compute l2-distance to any edge
+    non_edges_pad = np.pad(non_edges, (1, 1), mode='constant',
+                           constant_values=0)
+    dist = cv2.distanceTransform(non_edges_pad, cv2.DIST_L2, 5,
+                                 dstType=cv2.CV_32F)[1:-1, 1:-1]
+
+    # get largest circle in non-edge region
+    y, x = divmod(dist.argmax(), dist.shape[1])
+    max_dist = dist[y, x]
+
+    # compute largest bounding box that can fit inside the circle
+    aspect_ratio = img.shape[0] / img.shape[1]
+    dx = max_dist / (1.0 + aspect_ratio ** 2.0) ** 0.5
+    dy = dx * aspect_ratio
+
+    bbox = np.array([
+        [x - dx, y - dy],
+        [x + dx, y - dy],
+        [x - dx, y + dy],
+        [x + dx, y + dy]
+    ])
+
+    return bbox

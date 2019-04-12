@@ -1,21 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import cv2
-import yaml
 
 __all__ = [
     'VideoReader',
     'VideoWriter',
     'generate_frames',
     'get_fps',
-    'read_yaml'
 ]
-
-
-def read_yaml(fname):
-    with open(fname, 'r') as fp:
-        data = yaml.load(fp)
-    return data
 
 
 class VideoReader:

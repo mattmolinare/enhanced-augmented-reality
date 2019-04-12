@@ -1,0 +1,14 @@
+input_image: 'images/opencv.png'
+input_video: 'videos/kitchen/kitchen.mp4'
+output_video: 'output/kitchen.mp4'
+
+num_features: 2000
+num_matches: 2000
+ransac_thresh: 20.0
+frame_step: 8
+
+median_size: 11
+sobel_size: 3
+edge_thresh: 40
+
+verbose: True

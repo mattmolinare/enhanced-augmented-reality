@@ -2,88 +2,100 @@
 # -*- coding: utf-8 -*-
 
 import cv2
-import glob
 import numpy as np
 import sys
 
 # local import
 import ear
 
+default_params = {
+    'input_image': r'images/opencv.png',
+    'input_video': r'videos/kitchen/kitchen.mp4',
+    'output_video': r'output/kitchen.mp4',
+    'num_features': 2000,
+    'num_matches': 2000,
+    'ransac_thresh': 20.0,
+    'frame_step': 8,
+    'median_size': 11,
+    'sobel_size': 3,
+    'edge_thresh': 40,
+    'verbose': True
+}
 
-def main(fname):
 
-    params = ear.read_yaml(fname)
+def main(params):
 
-    img = cv2.imread(params['image_in'])
-    fps = ear.get_fps(params['video_in'])
-    gen = ear.generate_frames(params['video_in'])
+    # file io
+    img = cv2.imread(params['input_image'])
+    fps = ear.get_fps(params['input_video'])
+    gen = ear.generate_frames(params['input_video'])
 
-    frame_in1 = next(gen)
-    rows, cols = frame_in1.shape[:2]
+    # initialize
+    a = next(gen)
+    rows, cols = a.shape[:2]
+    bbox = ear.get_initial_bbox(img, a, params['median_size'],
+                                params['sobel_size'], params['edge_thresh'])
+    Ha = ear.get_initial_homography(img, bbox)
 
-    bbox = ear.get_initial_bbox(frame_in1)
-    H = ear.get_initial_homography(img, bbox)
-    i = 1
+    # allocate frames
+    frames = np.empty((params['frame_step'], rows, cols, 3), dtype=np.uint8)
 
-    with ear.VideoWriter(params['video_out'], fps, (cols, rows)) as writer:
+    with ear.VideoWriter(params['output_video'], fps, (cols, rows)) as writer:
 
-        # project image into first frame
-        frame_out = ear.project_image(img, frame_in1, H)
-        if params['draw_bbox']:
-            ear.draw_bbox(frame_out, bbox, thickness=2)
+        # write initial frame
+        frame = ear.project_image(img, a, Ha)
+        writer.write(frame)
 
-        # write first frame
-        if params['verbose']:
-            print('writing frame %i' % i)
-        writer.write(frame_out)
-
-        for frame_in2 in gen:
-
-            i += 1
-
-            # detect features
-            kp1, kp2, desc1, desc2 = ear.orb_detector(
-                frame_in1, frame_in2, num_features=params['num_features'])
-
-            # match features
-            matches = ear.bf_matcher(desc1, desc2)[:params['num_matches']]
-            pts1, pts2 = ear.get_matched_points(kp1, kp2, matches)
-
-            # compute homography
-            H_12, mask = ear.compute_homography(
-                pts1, pts2, ransac_thresh=params['ransac_thresh'])
+        for frame_count, b in enumerate(gen, 1):
 
             if params['verbose']:
-                print('\t# matches: %i' % len(matches))
-                print('\t# inliers: %i' % np.count_nonzero(mask))
+                print('on frame %i' % frame_count)
+
+            i = (frame_count - 1) % params['frame_step']
+
+            # pocket frame
+            frames[i] = b
+
+            if i != params['frame_step'] - 1:
+                continue
 
             # update cumulative homography
-            H = H_12.dot(H)
-            H /= H[2, 2]
+            Hab = ear.get_homography(a, b, params['num_features'],
+                                     params['num_matches'],
+                                     params['ransac_thresh'])
+            Hb = ear.update_homography(Ha, Hab)
 
-            # project image into frame
-            frame_out = ear.project_image(img, frame_in2, H)
-            if params['draw_bbox']:
-                bbox = ear.apply_homography(bbox, H_12)
-                ear.draw_bbox(frame_out, bbox, thickness=2)
+            # compute partial homographies
+            homographies = ear.interpolate_homographies(Ha, Hb,
+                                                        params['frame_step'],
+                                                        method='direct')
 
-            # write frame
-            if params['verbose']:
-                print('writing frame %i' % i)
-            writer.write(frame_out)
+            for b, Hb in zip(frames, homographies):
+                # write frames
+                frame = ear.project_image(img, b, Hb, copy=True)
+                writer.write(frame)
 
-            # update frame
-            frame_in1 = frame_in2
+            # update a
+            a[:] = b
+            Ha[:] = Hb
+
+            if 'num_frames' in params and frame_count > params['num_frames']:
+                break
 
 
 if __name__ == '__main__':
 
     if len(sys.argv) > 1:
         fname = sys.argv[1]
+        try:
+            import yaml
+            with open(fname, 'r') as fp:
+                params = yaml.load(fp)
+        except ImportError:
+            print('yaml library is unavailable; using default parameters')
+            params = default_params
     else:
-        for fname in glob.iglob('*.yaml'):
-            break
-        else:
-            raise IOError('no .yaml file found')
+        print('no yaml file provided; using default parameters')
+        params = default_params
 
-    main(fname)
+    main(params)
