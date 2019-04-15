@@ -3,6 +3,7 @@
 
 import cv2
 import numpy as np
+import os
 import sys
 
 # local import
@@ -27,8 +28,12 @@ def main(params):
 
     # file io
     img = cv2.imread(params['input_image'])
-    fps = ear.get_fps(params['input_video'])
-    gen = ear.generate_frames(params['input_video'])
+    if os.path.isfile(params['input_video']):
+        fps = ear.get_fps(params['input_video'])
+        gen = ear.generate_frames(params['input_video'])
+    else:
+        raise FileNotFoundError('no such input video: %s'
+                                % params['input_video'])
 
     # initialize
     a = next(gen)
@@ -90,7 +95,7 @@ if __name__ == '__main__':
         try:
             import yaml
             with open(fname, 'r') as fp:
-                params = yaml.load(fp)
+                params = yaml.load(fp, Loader=yaml.FullLoader)
         except ImportError:
             print('yaml library is unavailable; using default parameters')
             params = default_params
