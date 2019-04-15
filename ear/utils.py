@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import cProfile
 import cv2
 import numpy as np
+import pstats
+
 
 __all__ = [
     'compute_edge_gradient',
@@ -9,8 +12,27 @@ __all__ = [
     'easy_imshow',
     'get_corners',
     'get_initial_bbox',
-    'rescale_image'
+    'rescale_image',
+    'Profiler'
 ]
+
+
+class Profiler:
+
+    def __init__(self, keys=[], restrictions=[]):
+        self.keys = keys
+        self.restrictions = restrictions
+
+    def __enter__(self):
+        self._pf = cProfile.Profile()
+        self._pf.enable()
+        return self._pf
+
+    def __exit__(self, type, value, traceback):
+        self._pf.disable()
+        p = pstats.Stats(self._pf)
+        p.sort_stats(*self.keys)
+        p.print_stats(*self.restrictions)
 
 
 def easy_imshow(img, num=None, **imshow_kwargs):
@@ -37,7 +59,7 @@ def easy_imshow(img, num=None, **imshow_kwargs):
     return fig, ax
 
 
-def draw_bbox(img, bbox, color=(0, 0, 255), thickness=1):
+def draw_bbox(img, bbox, color=(255, 255, 0), thickness=3):
     """Bounding box is defined as [top-left, top-right, bottom-left,
     bottom-right].
     """
@@ -81,8 +103,8 @@ def compute_edge_gradient(img, sobel_size=3):
 
 
 def get_initial_bbox(img, frame, median_size, sobel_size, edge_thresh):
-    """Get initial bounding box using distances to edge regions of `frame`.
-    Bounding box is defined as [top-left, top-right, bottom-left,
+    """Get initial bounding box using the maximum distance to an edges in
+    `frame`. Bounding box is defined as [top-left, top-right, bottom-left,
     bottom-right].
     """
     # apply median filter
@@ -102,12 +124,12 @@ def get_initial_bbox(img, frame, median_size, sobel_size, edge_thresh):
 
     # get largest circle in non-edge region
     y, x = divmod(dist.argmax(), dist.shape[1])
-    max_dist = dist[y, x]
+    r = dist[y, x]
 
     # compute largest bounding box that can fit inside the circle
-    aspect_ratio = img.shape[0] / img.shape[1]
-    dx = max_dist / (1.0 + aspect_ratio ** 2.0) ** 0.5
-    dy = dx * aspect_ratio
+    tan = img.shape[0] / img.shape[1]
+    dx = r / (1 + tan ** 2) ** 0.5
+    dy = dx * tan
 
     bbox = np.array([
         [x - dx, y - dy],

@@ -54,7 +54,7 @@ def interpolate_homographies(H1, H2, num_steps, method='direct'):
     (`num_steps`, 3, 3)
     """
     if num_steps == 1:
-        return H2
+        return H2[np.newaxis]
 
     homographies = np.empty((num_steps, 3, 3))
     homographies[-1] = H2

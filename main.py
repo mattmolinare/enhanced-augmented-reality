@@ -11,15 +11,15 @@ import ear
 default_params = {
     'input_image': r'images/opencv.png',
     'input_video': r'videos/kitchen/kitchen.mp4',
-    'output_video': r'output/kitchen.mp4',
+    'output_video': r'output/default.mp4',
     'num_features': 2000,
     'num_matches': 2000,
     'ransac_thresh': 20.0,
-    'frame_step': 8,
+    'frame_step': 16,
     'median_size': 11,
     'sobel_size': 3,
     'edge_thresh': 40,
-    'verbose': True
+    'verbose': False
 }
 
 
@@ -98,4 +98,5 @@ if __name__ == '__main__':
         print('no yaml file provided; using default parameters')
         params = default_params
 
-    main(params)
+    with ear.Profiler(['time'], [10]):
+        main(params)

@@ -11,4 +11,4 @@ median_size: 11
 sobel_size: 3
 edge_thresh: 40
 
-verbose: True
+verbose: False

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import cv2
+import os
 
 __all__ = [
-    'VideoReader',
-    'VideoWriter',
     'generate_frames',
     'get_fps',
+    'VideoReader',
+    'VideoWriter'
 ]
 
 
@@ -30,16 +31,17 @@ class VideoReader:
 class VideoWriter:
 
     codecs = {
-     'mp4': 'MP4V'
+     '.mp4': 'mp4v'
     }
 
     def __init__(self, fname, fps, size):
 
-        ext = fname.rsplit('.', 1)[1].lower()
-        if ext not in VideoWriter.codecs:
+        root, ext = os.path.splitext(fname)
+        ext_lower = ext.lower()
+        if ext_lower not in VideoWriter.codecs:
             raise ValueError('invalid file name extension: %s' % ext)
 
-        self.fname = fname
+        self.fname = root + ext_lower
         self.fourcc = cv2.VideoWriter_fourcc(*VideoWriter.codecs[ext])
         self.fps = fps
         self.size = tuple(size)

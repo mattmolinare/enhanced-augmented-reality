@@ -11,13 +11,13 @@ import ear
 if __name__ == '__main__':
 
     # inputs
-    input_image = r'..\images\opencv.png'
-    input_video = r'..\videos\ps3-4-a\ps3-4-a.mp4'
-    output_video = r'..\videos\ps3-4-a\test_interp.mp4'
+    input_image = r'../images/opencv.png'
+    input_video = r'../videos/ps3-4-a/tmp.mp4'
+    output_video = r'../videos/ps3-4-a/frame_step.mp4'
     num_features = 5000
     num_matches = 2000
     ransac_thresh = 10.0
-    frame_step = 4
+    frame_step = 20
 #    median_size = 11
 #    sobel_size = 3
 #    edge_thresh = 40
@@ -38,6 +38,7 @@ if __name__ == '__main__':
         [446.0, 256.0]
     ])
     Ha = ear.get_initial_homography(img, bbox)
+#    bbox = ear.get_corners(img.shape[0], img.shape[1])
 
     # allocate frames
     frames = np.empty((frame_step, rows, cols, 3), dtype=np.uint8)
@@ -46,6 +47,8 @@ if __name__ == '__main__':
 
         # write initial frame
         frame = ear.project_image(img, a, Ha)
+#        frame = a.copy()
+#        ear.draw_bbox(frame, ear.apply_homography(bbox, Ha))
         writer.write(frame)
 
         for frame_count, b in enumerate(gen, 1):
@@ -72,8 +75,13 @@ if __name__ == '__main__':
             for b, Hb in zip(frames, homographies):
                 # write frames
                 frame = ear.project_image(img, b, Hb)
+#                frame = b.copy()
+#                ear.draw_bbox(frame, ear.apply_homography(bbox, Hb))
                 writer.write(frame)
 
             # update a
             a[:] = b
             Ha[:] = Hb
+
+            if frame_count == 1140:
+                break

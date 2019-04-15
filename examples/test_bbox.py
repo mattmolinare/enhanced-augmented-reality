@@ -11,15 +11,15 @@ import ear
 
 if __name__ == '__main__':
 
-    fname = r'../videos/office2/frames/frame0001.png'
-#    fname = r'../videos/ps3-4-a/frames/frame0001.png'
-    median_size = 11
+    fname = r'../videos/office/frames/frame0001.png'
+    median_size = 7
     sobel_size = 3
     edge_thresh = 40
     img_rows = 100
     img_cols = 100
 
     frame = cv2.imread(fname)
+    frame = ear.rescale_image(frame, 1 / 2)
     frame_blur = cv2.medianBlur(frame, median_size)
     grad = ear.compute_edge_gradient(frame_blur, sobel_size=sobel_size)
     non_edges = np.where(grad > edge_thresh, 0, 255).astype(np.uint8)
@@ -29,11 +29,11 @@ if __name__ == '__main__':
                                  dstType=cv2.CV_32F)[1:-1, 1:-1]
 
     y, x = divmod(dist.argmax(), dist.shape[1])
-    max_dist = dist[y, x]
+    r = dist[y, x]
 
-    aspect_ratio = img_rows / img_cols
-    dx = max_dist / (1.0 + aspect_ratio ** 2.0) ** 0.5
-    dy = dx * aspect_ratio
+    tan = img_rows / img_cols
+    dx = r / (1 + tan ** 2) ** 0.5
+    dy = dx * tan
 
     bbox = np.array([
         [x - dx, y - dy],
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     ])
 
     ear.draw_bbox(frame, bbox, (0, 255, 0), 2)
-    cv2.circle(frame, (x, y), max_dist, (0, 0, 255), 2)
+    cv2.circle(frame, (x, y), r, (255, 0, 255), 2)
 
     fig = plt.figure(1)
     fig.clf()
