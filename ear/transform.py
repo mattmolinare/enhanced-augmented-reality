@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 
 # local imports
+from .anms import anms
 from . import feature_matchers
 from . import feature_detectors
 from . import utils
@@ -82,17 +83,24 @@ def get_initial_homography(img, bbox):
     return H
 
 
-def get_homography(img1, img2, num_features, num_matches, ransac_thresh):
+def get_homography(img1, img2, num_features, num_matches, num_anms,
+                   ransac_thresh):
 
     # detect features
-    kp1, kp2, desc1, desc2 = feature_detectors.orb_detector(
+    kpts1, kpts2, desc1, desc2 = feature_detectors.orb_detector(
         img1, img2, num_features=num_features)
 
     # match features
     matches = feature_matchers.bf_matcher(desc1, desc2)[:num_matches]
-    pts1, pts2 = feature_matchers.get_matched_points(kp1, kp2, matches)
+
+    if num_anms < num_matches:
+        # run ANMS
+        matched_kpts1 = [kpts1[match.queryIdx] for match in matches]
+        anms_indices = anms(matched_kpts1)[:num_anms]
+        matches = [matches[index] for index in anms_indices]
 
     # estimate homography
+    pts1, pts2 = feature_matchers.get_matched_points(kpts1, kpts2, matches)
     H, _ = compute_homography(pts1, pts2, ransac_thresh=ransac_thresh)
 
     return H

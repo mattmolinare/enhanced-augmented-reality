@@ -19,13 +19,13 @@ def bf_matcher(desc1, desc2):
     return matches
 
 
-def get_matched_points(kp1, kp2, matches):
+def get_matched_points(kpts1, kpts2, matches):
 
     pts1 = np.empty((len(matches), 2), dtype=np.float32)
     pts2 = np.empty_like(pts1)
 
     for i, match in enumerate(matches):
-        pts1[i] = kp1[match.queryIdx].pt
-        pts2[i] = kp2[match.trainIdx].pt
+        pts1[i] = kpts1[match.queryIdx].pt
+        pts2[i] = kpts2[match.trainIdx].pt
 
     return pts1, pts2

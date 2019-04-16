@@ -9,19 +9,49 @@ import sys
 # local import
 import ear
 
-default_params = {
+default_params = []
+
+default_params.append({
     'input_image': r'images/opencv.png',
     'input_video': r'videos/kitchen/kitchen.mp4',
-    'output_video': r'output/default.mp4',
+    'output_video': r'output/default_kitchen.mp4',
     'num_features': 2000,
     'num_matches': 2000,
     'ransac_thresh': 20.0,
-    'frame_step': 16,
+    'frame_step': 8,
     'median_size': 11,
     'sobel_size': 3,
     'edge_thresh': 40,
     'verbose': False
-}
+})
+
+default_params.append({
+    'input_image': r'images/opencv.png',
+    'input_video': r'videos/living_room/living_room.mp4',
+    'output_video': r'output/default_living_room.mp4',
+    'num_features': 2000,
+    'num_matches': 2000,
+    'ransac_thresh': 20.0,
+    'frame_step': 8,
+    'median_size': 11,
+    'sobel_size': 3,
+    'edge_thresh': 40,
+    'verbose': False
+})
+
+default_params.append({
+    'input_image': r'images/opencv.png',
+    'input_video': r'videos/office/office.mp4',
+    'output_video': r'output/default_office.mp4',
+    'num_features': 5000,
+    'num_matches': 3000,
+    'ransac_thresh': 20.0,
+    'frame_step': 8,
+    'median_size': 11,
+    'sobel_size': 3,
+    'edge_thresh': 40,
+    'verbose': False
+})
 
 
 def main(params):
@@ -67,6 +97,7 @@ def main(params):
             # update cumulative homography
             Hab = ear.get_homography(a, b, params['num_features'],
                                      params['num_matches'],
+                                     params['num_anms'],
                                      params['ransac_thresh'])
             Hb = ear.update_homography(Ha, Hab)
 
@@ -95,7 +126,7 @@ if __name__ == '__main__':
         try:
             import yaml
             with open(fname, 'r') as fp:
-                params = yaml.load(fp, Loader=yaml.FullLoader)
+                params = yaml.load(fp)
         except ImportError:
             print('yaml library is unavailable; using default parameters')
             params = default_params
@@ -103,5 +134,9 @@ if __name__ == '__main__':
         print('no yaml file provided; using default parameters')
         params = default_params
 
-    with ear.Profiler(['time'], [10]):
-        main(params)
+    if not isinstance(params, list):
+        params = [params]
+
+    for p in params:
+        with ear.Profiler(['time'], [10]):
+            main(p)
