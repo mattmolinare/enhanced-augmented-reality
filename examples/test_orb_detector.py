@@ -10,13 +10,13 @@ import ear
 
 if __name__ == '__main__':
 
-    fname1 = r'..\videos\kitchen\frames\frame0101.png'
-    fname2 = r'..\videos\kitchen\frames\frame0202.png'
+    fname1 = r'..\videos\office\frames\frame0101.png'
+    fname2 = r'..\videos\office\frames\frame0202.png'
 
-    num_features = 2000
+    num_features = 5000
     num_matches = 200
     num_anms = 100
-    ransac_thresh = 5.0
+    ransac_thresh = 10.0
 
     img1 = cv2.imread(fname1, 0)
     img2 = cv2.imread(fname2, 0)

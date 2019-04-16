@@ -1,11 +1,12 @@
 input_image: 'images/opencv.png'
 input_video: 'videos/office/office.mp4'
-output_video: 'output/office.mp4'
+output_video: 'output/office_anms.mp4'
 
 num_features: 5000
-num_matches: 3000
-ransac_thresh: 20.0
-frame_step: 8
+num_matches: 200
+num_anms: 100
+ransac_thresh: 10.0
+frame_step: 4
 
 median_size: 11
 sobel_size: 3
