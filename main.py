@@ -17,6 +17,7 @@ default_params.append({
     'output_video': r'output/default_kitchen.mp4',
     'num_features': 2000,
     'num_matches': 2000,
+    'num_anms': None,
     'ransac_thresh': 20.0,
     'frame_step': 8,
     'median_size': 11,
@@ -31,6 +32,7 @@ default_params.append({
     'output_video': r'output/default_living_room.mp4',
     'num_features': 2000,
     'num_matches': 2000,
+    'num_anms': None,
     'ransac_thresh': 20.0,
     'frame_step': 8,
     'median_size': 11,
@@ -45,6 +47,7 @@ default_params.append({
     'output_video': r'output/default_office.mp4',
     'num_features': 5000,
     'num_matches': 3000,
+    'num_anms': None,
     'ransac_thresh': 20.0,
     'frame_step': 8,
     'median_size': 11,
@@ -77,6 +80,9 @@ def main(params):
 
     with ear.VideoWriter(params['output_video'], fps, (cols, rows)) as writer:
 
+        msg = 'writing to %s...' % params['output_video']
+        print(msg)
+
         # write initial frame
         frame = ear.project_image(img, a, Ha)
         writer.write(frame)
@@ -97,8 +103,8 @@ def main(params):
             # update cumulative homography
             Hab = ear.get_homography(a, b, params['num_features'],
                                      params['num_matches'],
-                                     params['num_anms'],
-                                     params['ransac_thresh'])
+                                     params['ransac_thresh'],
+                                     num_anms=params.get('num_anms'))
             Hb = ear.update_homography(Ha, Hab)
 
             # compute partial homographies
@@ -117,6 +123,8 @@ def main(params):
 
             if 'num_frames' in params and frame_count > params['num_frames']:
                 break
+
+        print(msg + 'done!')
 
 
 if __name__ == '__main__':

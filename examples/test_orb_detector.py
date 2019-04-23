@@ -18,8 +18,11 @@ if __name__ == '__main__':
     num_anms = 100
     ransac_thresh = 10.0
 
-    img1 = cv2.imread(fname1, 0)
-    img2 = cv2.imread(fname2, 0)
+    bgr1 = cv2.imread(fname1)
+    bgr2 = cv2.imread(fname2)
+
+    img1 = cv2.cvtColor(bgr1, cv2.COLOR_BGR2GRAY)
+    img2 = cv2.cvtColor(bgr2, cv2.COLOR_BGR2GRAY)
 
     kpts1, kpts2, desc1, desc2 = ear.orb_detector(img1, img2,
                                                   num_features=num_features)
@@ -31,11 +34,16 @@ if __name__ == '__main__':
 
     pts1, pts2 = ear.get_matched_points(kpts1, kpts2, anms_matches)
     H, ransac_mask = ear.compute_homography(pts1, pts2, ransac_thresh)
-    ransac_matches = np.compress(ransac_mask[:, 0], anms_matches)
+    ransac_matches = anms_matches[ransac_mask]
 
     print('# bf matches: %i' % len(matches))
     print('# ransac matches: %i' % len(ransac_matches))
 
-    res = cv2.drawMatches(img1, kpts1, img2, kpts2, ransac_matches, None,
-                          flags=2)
-    ear.easy_imshow(res, num=1)
+    res1 = cv2.drawMatches(img1, kpts1, img2, kpts2, ransac_matches, None,
+                           flags=2)
+    ear.easy_imshow(res1, num=1)
+
+    res2 = np.dstack((img1,) * 3)
+    for pt in pts1[ransac_mask]:
+        cv2.circle(res2, tuple(pt), 10, (255, 0, 0), 3)
+    ear.easy_imshow(res2, num=2)

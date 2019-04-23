@@ -82,6 +82,3 @@ if __name__ == '__main__':
             # update a
             a[:] = b
             Ha[:] = Hb
-
-            if frame_count == 1140:
-                break

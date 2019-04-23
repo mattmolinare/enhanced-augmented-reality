@@ -28,7 +28,12 @@ def compute_homography(pts1, pts2, ransac_thresh=None):
     else:
         kwargs = dict(method=cv2.RANSAC, ransacReprojThreshold=ransac_thresh)
 
-    return cv2.findHomography(pts1, pts2, **kwargs)
+    H, mask_8u = cv2.findHomography(pts1, pts2, **kwargs)
+
+    # get mask as 1D boolean
+    mask = mask_8u[:, 0].astype(np.bool)
+
+    return H, mask
 
 
 def apply_homography(pts, H):
@@ -83,8 +88,8 @@ def get_initial_homography(img, bbox):
     return H
 
 
-def get_homography(img1, img2, num_features, num_matches, num_anms,
-                   ransac_thresh):
+def get_homography(img1, img2, num_features, num_matches, ransac_thresh,
+                   num_anms=None):
 
     # detect features
     kpts1, kpts2, desc1, desc2 = feature_detectors.orb_detector(
@@ -93,7 +98,7 @@ def get_homography(img1, img2, num_features, num_matches, num_anms,
     # match features
     matches = feature_matchers.bf_matcher(desc1, desc2)[:num_matches]
 
-    if num_anms < num_matches:
+    if num_anms is not None and num_anms < num_matches:
         # run ANMS
         matched_kpts1 = [kpts1[match.queryIdx] for match in matches]
         anms_indices = anms(matched_kpts1)[:num_anms]
