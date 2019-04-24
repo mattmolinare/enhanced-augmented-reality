@@ -65,13 +65,10 @@ def draw_bbox(img, bbox, color=(255, 255, 0), thickness=3):
     """
     bbox = [tuple(pt) for pt in bbox.round().astype(np.int32)]
 
-    def draw_line(i, j):
-        cv2.line(img, bbox[i], bbox[j], color, thickness)
-
-    draw_line(0, 1)
-    draw_line(1, 3)
-    draw_line(3, 2)
-    draw_line(2, 0)
+    cv2.line(img, bbox[0], bbox[1], color, thickness)
+    cv2.line(img, bbox[1], bbox[3], color, thickness)
+    cv2.line(img, bbox[3], bbox[2], color, thickness)
+    cv2.line(img, bbox[2], bbox[0], color, thickness)
 
 
 def rescale_image(img, scale):
@@ -94,12 +91,12 @@ def compute_edge_gradient(img, sobel_size=3):
     if img.ndim == 3:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    Gx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=sobel_size)
-    Gy = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=sobel_size)
+    grad_x = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=sobel_size)
+    grad_y = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=sobel_size)
 
-    G = np.abs(Gx) + np.abs(Gy)
+    grad = np.abs(grad_x) + np.abs(grad_y)
 
-    return G
+    return grad
 
 
 def get_initial_bbox(img, frame, median_size, sobel_size, edge_thresh):

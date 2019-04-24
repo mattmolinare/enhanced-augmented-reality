@@ -99,7 +99,7 @@ def get_homography(img1, img2, num_features, num_matches, ransac_thresh,
     matches = feature_matchers.bf_matcher(desc1, desc2)[:num_matches]
 
     if num_anms is not None and num_anms < num_matches:
-        # run ANMS
+        # run adaptive non-maximal suppression
         matched_kpts1 = [kpts1[match.queryIdx] for match in matches]
         anms_indices = anms(matched_kpts1)[:num_anms]
         matches = [matches[index] for index in anms_indices]

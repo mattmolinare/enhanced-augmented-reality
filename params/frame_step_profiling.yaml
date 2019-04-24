@@ -1,0 +1,106 @@
+- input_image: 'images/opencv.png'
+  input_video: 'videos/kitchen/kitchen.mp4'
+  output_video: 'output/fs/fs01.mp4'
+  stats_file: 'output/fs/fs01.stats'
+
+  num_features: 2000
+  num_matches: 200
+  num_anms: 100
+  ransac_thresh: 5.0
+  frame_step: 1
+
+  median_size: 11
+  sobel_size: 3
+  edge_thresh: 40
+
+  verbose: False
+
+
+
+- input_image: 'images/opencv.png'
+  input_video: 'videos/kitchen/kitchen.mp4'
+  output_video: 'output/fs/fs02.mp4'
+  stats_file: 'output/fs/fs02.stats'
+
+  num_features: 2000
+  num_matches: 200
+  num_anms: 100
+  ransac_thresh: 5.0
+  frame_step: 2
+
+  median_size: 11
+  sobel_size: 3
+  edge_thresh: 40
+
+  verbose: False
+
+
+- input_image: 'images/opencv.png'
+  input_video: 'videos/kitchen/kitchen.mp4'
+  output_video: 'output/fs/fs04.mp4'
+  stats_file: 'output/fs/fs04.stats'
+
+  num_features: 2000
+  num_matches: 200
+  num_anms: 100
+  ransac_thresh: 5.0
+  frame_step: 4
+
+  median_size: 11
+  sobel_size: 3
+  edge_thresh: 40
+
+  verbose: False
+
+
+- input_image: 'images/opencv.png'
+  input_video: 'videos/kitchen/kitchen.mp4'
+  output_video: 'output/fs/fs08.mp4'
+  stats_file: 'output/fs/fs08.stats'
+
+  num_features: 2000
+  num_matches: 200
+  num_anms: 100
+  ransac_thresh: 5.0
+  frame_step: 8
+
+  median_size: 11
+  sobel_size: 3
+  edge_thresh: 40
+
+  verbose: False
+
+
+- input_image: 'images/opencv.png'
+  input_video: 'videos/kitchen/kitchen.mp4'
+  output_video: 'output/fs/fs16.mp4'
+  stats_file: 'output/fs/fs16.stats'
+
+  num_features: 2000
+  num_matches: 200
+  num_anms: 100
+  ransac_thresh: 5.0
+  frame_step: 16
+
+  median_size: 11
+  sobel_size: 3
+  edge_thresh: 40
+
+  verbose: False
+
+- input_image: 'images/opencv.png'
+  input_video: 'videos/kitchen/kitchen.mp4'
+  output_video: 'output/fs/fs32.mp4'
+  stats_file: 'output/fs/fs32.stats'
+
+  num_features: 2000
+  num_matches: 200
+  num_anms: 100
+  ransac_thresh: 5.0
+  frame_step: 32
+
+  median_size: 11
+  sobel_size: 3
+  edge_thresh: 40
+
+  verbose: False

@@ -1,15 +1,16 @@
 input_image: 'images/opencv.png'
 input_video: 'videos/office/office.mp4'
-output_video: 'output/office_anms.mp4'
+output_video: 'output/office.mp4'
+stats_file: 'output/office.stats'
 
 num_features: 5000
-num_matches: 200
-num_anms: 100
-ransac_thresh: 10.0
-frame_step: 4
+num_matches: 100
+num_anms: null
+ransac_thresh: 20.0
+frame_step: 8
 
 median_size: 11
 sobel_size: 3
 edge_thresh: 40
 
-verbose: True
+verbose: False

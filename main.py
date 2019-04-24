@@ -15,6 +15,7 @@ default_params.append({
     'input_image': r'images/opencv.png',
     'input_video': r'videos/kitchen/kitchen.mp4',
     'output_video': r'output/default_kitchen.mp4',
+    'stats_file': r'output/default_kitchen.stats',
     'num_features': 2000,
     'num_matches': 2000,
     'num_anms': None,
@@ -30,6 +31,7 @@ default_params.append({
     'input_image': r'images/opencv.png',
     'input_video': r'videos/living_room/living_room.mp4',
     'output_video': r'output/default_living_room.mp4',
+    'stats_file': r'output/default_living_room.stats',
     'num_features': 2000,
     'num_matches': 2000,
     'num_anms': None,
@@ -45,6 +47,7 @@ default_params.append({
     'input_image': r'images/opencv.png',
     'input_video': r'videos/office/office.mp4',
     'output_video': r'output/default_office.mp4',
+    'stats_file': r'output/default_office.stats',
     'num_features': 5000,
     'num_matches': 3000,
     'num_anms': None,
@@ -67,6 +70,10 @@ def main(params):
     else:
         raise FileNotFoundError('no such input video: %s'
                                 % params['input_video'])
+
+    output_dir = os.path.dirname(params['output_video'])
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
 
     # initialize
     a = next(gen)
@@ -146,5 +153,7 @@ if __name__ == '__main__':
         params = [params]
 
     for p in params:
-        with ear.Profiler(['time'], [10]):
+        with ear.Profiler(['time'], [10]) as pf:
             main(p)
+        if 'stats_file' in p:
+            pf.dump_stats(p['stats_file'])

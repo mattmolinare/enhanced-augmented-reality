@@ -10,19 +10,22 @@ import ear
 
 if __name__ == '__main__':
 
-    fname1 = r'..\videos\office\frames\frame0101.png'
-    fname2 = r'..\videos\office\frames\frame0202.png'
+    fname1 = r'..\videos\living_room\frames\frame0101.png'
+    fname2 = r'..\videos\living_room\frames\frame0601.png'
 
     num_features = 5000
-    num_matches = 200
-    num_anms = 100
-    ransac_thresh = 10.0
+    num_matches = 2000
+    num_anms = 30
+    ransac_thresh = 20.0
 
     bgr1 = cv2.imread(fname1)
     bgr2 = cv2.imread(fname2)
 
     img1 = cv2.cvtColor(bgr1, cv2.COLOR_BGR2GRAY)
     img2 = cv2.cvtColor(bgr2, cv2.COLOR_BGR2GRAY)
+
+    img1 = cv2.resize(img1, None, fx=1/4, fy=1/4)
+    img2 = cv2.resize(img2, None, fx=1/4, fy=1/4)
 
     kpts1, kpts2, desc1, desc2 = ear.orb_detector(img1, img2,
                                                   num_features=num_features)
