@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -20,12 +21,13 @@ for file in stats_files:
     t.append(p.total_tt)
 t = np.array(t)
 
-fig = plt.figure(1)
+matplotlib.rcParams.update({'font.size': 22})
+fig = plt.figure(1, figsize=(8, 6))
 fig.clf()
 ax = fig.gca()
-ax.plot(frame_step, t, c='k')
-ax.scatter(frame_step, t, marker='x', c='k')
+ax.plot(frame_step, num_frames / t, c='k', ls='--')
+ax.scatter(frame_step, num_frames / t, marker='x', c='k', s=100)
 ax.grid(True)
 ax.set_xlabel('N')
-ax.set_ylabel('runtime (s)')
-ax.set_title('# frame interpolates vs. runtime')
+ax.set_ylabel('FPS')
+ax.set_title('')
