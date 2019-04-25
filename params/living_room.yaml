@@ -1,9 +1,10 @@
 input_image: 'images/opencv.png'
 input_video: 'videos/living_room/living_room.mp4'
-output_video: 'output/living_room.mp4'
+output_prefix: 'output/living_room_with_anms'
 
 num_features: 2000
 num_matches: 2000
+num_anms: 100
 ransac_thresh: 20.0
 frame_step: 8
 

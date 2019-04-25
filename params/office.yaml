@@ -1,7 +1,6 @@
 input_image: 'images/opencv.png'
 input_video: 'videos/office/office.mp4'
-output_video: 'output/office.mp4'
-stats_file: 'output/office.stats'
+output_prefix: 'output/office'
 
 num_features: 5000
 num_matches: 100

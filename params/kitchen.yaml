@@ -1,6 +1,6 @@
 input_image: 'images/opencv.png'
 input_video: 'videos/kitchen/kitchen.mp4'
-output_video: 'output/kitchen_anms_fs4.mp4'
+output_prefix: 'output/kitchen'
 
 num_features: 2000
 num_matches: 200

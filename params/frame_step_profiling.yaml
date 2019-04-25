@@ -1,7 +1,6 @@
 - input_image: 'images/opencv.png'
   input_video: 'videos/kitchen/kitchen.mp4'
-  output_video: 'output/fs/fs01.mp4'
-  stats_file: 'output/fs/fs01.stats'
+  output_prefix: 'output/fs/fs01'
 
   num_features: 2000
   num_matches: 200
@@ -19,8 +18,8 @@
 
 - input_image: 'images/opencv.png'
   input_video: 'videos/kitchen/kitchen.mp4'
-  output_video: 'output/fs/fs02.mp4'
-  stats_file: 'output/fs/fs02.stats'
+  output_prefix: 'output/fs/fs02'
+
 
   num_features: 2000
   num_matches: 200
@@ -37,8 +36,8 @@
 
 - input_image: 'images/opencv.png'
   input_video: 'videos/kitchen/kitchen.mp4'
-  output_video: 'output/fs/fs04.mp4'
-  stats_file: 'output/fs/fs04.stats'
+  output_prefix: 'output/fs/fs04'
+
 
   num_features: 2000
   num_matches: 200
@@ -55,8 +54,8 @@
 
 - input_image: 'images/opencv.png'
   input_video: 'videos/kitchen/kitchen.mp4'
-  output_video: 'output/fs/fs08.mp4'
-  stats_file: 'output/fs/fs08.stats'
+  output_prefix: 'output/fs/fs08'
+
 
   num_features: 2000
   num_matches: 200
@@ -73,8 +72,8 @@
 
 - input_image: 'images/opencv.png'
   input_video: 'videos/kitchen/kitchen.mp4'
-  output_video: 'output/fs/fs16.mp4'
-  stats_file: 'output/fs/fs16.stats'
+  output_prefix: 'output/fs/fs16'
+
 
   num_features: 2000
   num_matches: 200
@@ -90,8 +89,7 @@
 
 - input_image: 'images/opencv.png'
   input_video: 'videos/kitchen/kitchen.mp4'
-  output_video: 'output/fs/fs32.mp4'
-  stats_file: 'output/fs/fs32.stats'
+  output_prefix: 'output/fs/fs32'
 
   num_features: 2000
   num_matches: 200
