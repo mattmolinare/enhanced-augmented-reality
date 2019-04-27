@@ -11,21 +11,15 @@ import ear
 if __name__ == '__main__':
 
     fname1 = r'..\videos\office\frames\frame0101.png'
-    fname2 = r'..\videos\office\frames\frame0601.png'
+    fname2 = r'..\videos\office\frames\frame0801.png'
 
     num_features = 5000
-    num_matches = 2000
+    num_matches = 5000
     num_anms = 100
     ransac_thresh = 20.0
 
-    bgr1 = cv2.imread(fname1)
-    bgr2 = cv2.imread(fname2)
-
-    img1 = cv2.cvtColor(bgr1, cv2.COLOR_BGR2GRAY)
-    img2 = cv2.cvtColor(bgr2, cv2.COLOR_BGR2GRAY)
-
-#    img1 = cv2.resize(img1, None, fx=1/4, fy=1/4)
-#    img2 = cv2.resize(img2, None, fx=1/4, fy=1/4)
+    img1 = ear.rescale_image(cv2.imread(fname1, 0), 0.5)
+    img2 = ear.rescale_image(cv2.imread(fname2, 0), 0.5)
 
     kpts1, kpts2, desc1, desc2 = ear.orb_detector(img1, img2,
                                                   num_features=num_features)
@@ -39,14 +33,14 @@ if __name__ == '__main__':
     H, ransac_mask = ear.compute_homography(pts1, pts2, ransac_thresh)
     ransac_matches = anms_matches[ransac_mask]
 
-    print('# bf matches: %i' % len(matches))
-    print('# ransac matches: %i' % len(ransac_matches))
-
     res1 = cv2.drawMatches(img1, kpts1, img2, kpts2, ransac_matches, None,
                            flags=2)
     ear.easy_imshow(res1, num=1)
 
     res2 = np.dstack((img1,) * 3)
     for pt in pts1[ransac_mask]:
-        cv2.circle(res2, tuple(pt), 10, (255, 0, 0), 3)
+        cv2.circle(res2, tuple(pt), 6, (255, 0, 0), 2)
     ear.easy_imshow(res2, num=2)
+
+    print('# bf matches: %i' % len(matches))
+    print('# ransac matches: %i' % len(ransac_matches))

@@ -11,18 +11,19 @@ import ear
 
 if __name__ == '__main__':
 
-    fname = r'../videos/office/frames/frame0001.png'
+    fname = r'../videos/living_room/frames/frame0001.png'
     median_size = 7
     sobel_size = 3
     edge_thresh = 40
     img_rows = 100
     img_cols = 100
 
-    frame = cv2.imread(fname)
-    frame = ear.rescale_image(frame, 1 / 2)
+    frame = ear.rescale_image(cv2.imread(fname), 0.5)
     frame_blur = cv2.medianBlur(frame, median_size)
+
     grad = ear.compute_edge_gradient(frame_blur, sobel_size=sobel_size)
     non_edges = np.where(grad > edge_thresh, 0, 255).astype(np.uint8)
+
     non_edges_pad = np.pad(non_edges, (1, 1), mode='constant',
                            constant_values=0)
     dist = cv2.distanceTransform(non_edges_pad, cv2.DIST_L2, 5,

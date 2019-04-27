@@ -81,7 +81,7 @@ def main(params):
                                 params['sobel_size'], params['edge_thresh'])
     Ha = ear.get_initial_homography(img, bbox)
 
-    # allocate frames
+    # allocate frame cache
     frames = np.empty((params['frame_step'], rows, cols, 3), dtype=np.uint8)
 
     with ear.VideoWriter(output_video, fps, (cols, rows)) as writer:
@@ -135,13 +135,18 @@ def main(params):
 
 if __name__ == '__main__':
 
+    try:
+        import yaml
+        has_yaml = True
+    except ImportError:
+        has_yaml = False
+
     if len(sys.argv) > 1:
         fname = sys.argv[1]
-        try:
-            import yaml
+        if has_yaml:
             with open(fname, 'r') as fp:
-                params = yaml.load(fp)
-        except ImportError:
+                params = yaml.load(fp, Loader=yaml.FullLoader)
+        else:
             print('yaml library is unavailable; using default parameters')
             params = default_params
     else:
@@ -155,7 +160,8 @@ if __name__ == '__main__':
         with ear.Profiler(['time'], [10]) as pf:
             main(p)
         pf.dump_stats(p['output_prefix'] + '.stats')
-        yaml_fname = p['output_prefix'] + '.yaml'
-        if not os.path.isfile(yaml_fname):
-            with open(yaml_fname, 'w') as fp:
-                yaml.dump(p, fp)
+        if has_yaml:
+            yaml_fname = p['output_prefix'] + '.yaml'
+            if not os.path.isfile(yaml_fname):
+                with open(yaml_fname, 'w') as fp:
+                    yaml.dump(p, fp)
