@@ -1,5 +1,7 @@
 # Enhanced Augmented Reality
 
+Tracking algorithm for enhanced augmented reality.
+
 ## Setting up the environment
 
 To create the environment
